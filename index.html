@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#171a2b">
+    <title>PageVault | Campus Book Exchange</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <a class="logo" href="#home" aria-label="PageVault home">
+        <span class="logo-mark" aria-hidden="true">P</span>
+        <span>PageVault</span>
+    </a>
+    <nav aria-label="Main navigation">
+        <a class="active" href="#home">Home</a>
+        <a href="#catalog">Explore Books</a>
+        <a href="#dashboard">My Dashboard</a>
+    </nav>
+    <button class="primary-btn" type="button" onclick="showForm()">
+        <span aria-hidden="true">+</span> List a book
+    </button>
+</header>
+
+<section class="hero" id="home">
+    <div class="hero-copy">
+        <span class="eyebrow">CAMPUS BOOK EXCHANGE</span>
+        <h1>Share knowledge.<br><span>Save money.</span></h1>
+        <p>Discover, borrow, and exchange textbooks with students across your campus.</p>
+        <div class="hero-actions">
+            <a href="#catalog" class="hero-btn">Explore books <span aria-hidden="true">→</span></a>
+            <button class="text-btn" type="button" onclick="showForm()">How it works</button>
+        </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="book-stack">
+            <span class="book book-back"></span>
+            <span class="book book-middle"></span>
+            <span class="book book-front">📖</span>
+        </div>
+    </div>
+</section>
+
+<section class="stats">
+    <div class="stat-card">
+        <h2 id="totalBooks">0</h2>
+        <p>Total Books</p>
+    </div>
+    <div class="stat-card">
+        <h2 id="availableBooks">0</h2>
+        <p>Available Books</p>
+    </div>
+    <div class="stat-card">
+        <h2 id="borrowedBooks">0</h2>
+        <p>Borrowed Books</p>
+    </div>
+    <div class="stat-card">
+        <h2 id="totalRequests">0</h2>
+        <p>Borrow Requests</p>
+    </div>
+</section>
+
+<div id="reminders"></div>
+
+<section class="catalog section" id="catalog">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">BOOK COLLECTION</span>
+            <h2>Explore textbooks</h2>
+            <p>Find the right book for your next semester.</p>
+        </div>
+        <span class="result-count" id="resultCount"></span>
+    </div>
+
+    <div class="search-area">
+        <label class="search-field" for="searchInput">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" id="searchInput" placeholder="Search title, author, or course code...">
+        </label>
+        <select id="departmentFilter" aria-label="Filter by department">
+            <option value="">All Departments</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Mechanical">Mechanical</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Civil">Civil</option>
+            <option value="Science">Science</option>
+        </select>
+        <select id="statusFilter" aria-label="Filter by availability">
+            <option value="">All Availability</option>
+            <option value="Available">Available</option>
+            <option value="Borrowed">Borrowed</option>
+            <option value="Reserved">Reserved</option>
+        </select>
+    </div>
+    <button class="clear-filter-btn" id="clearFilters" type="button" hidden>Clear filters</button>
+
+    <div class="book-grid" id="bookGrid"></div>
+    <p id="emptyMessage" class="empty-message" hidden>No books found.</p>
+</section>
+
+<section class="section dashboard" id="dashboard">
+    <span class="tag">PERSONAL DASHBOARD</span>
+    <h2>My Books & Borrowing History</h2>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('listed')">My Listed Books</button>
+        <button class="tab-btn" onclick="switchTab('borrowed')">My Borrowed Books</button>
+        <button class="tab-btn" onclick="switchTab('requests')">Requests</button>
+    </div>
+
+    <div id="dashboardContent"></div>
+</section>
+
+<!-- Add Book Modal -->
+<div class="modal" id="bookModal">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeForm()">×</button>
+        <h2>List a New Book</h2>
+        <form id="bookForm">
+            <input type="text" id="bookTitle" placeholder="Book Title" required>
+            <input type="text" id="bookAuthor" placeholder="Author Name" required>
+            <input type="text" id="bookEdition" placeholder="Edition">
+            <input type="text" id="bookCourse" placeholder="Course Code (e.g. CS301)" required>
+            <select id="bookDepartment" required>
+                <option value="">Select Department</option>
+                <option>Computer Science</option>
+                <option>Mechanical</option>
+                <option>Electrical</option>
+                <option>Civil</option>
+                <option>Science</option>
+            </select>
+            <select id="bookCondition">
+                <option>Excellent</option>
+                <option>Good</option>
+                <option>Fair</option>
+            </select>
+            <div class="isbn-row">
+                <input type="text" id="bookISBN" placeholder="ISBN (optional)" inputmode="numeric">
+                <button class="secondary-btn" id="lookupISBN" type="button">Lookup</button>
+            </div>
+            <p class="form-status" id="isbnStatus" role="status"></p>
+            <button class="primary-btn" type="submit">Add Book</button>
+        </form>
+    </div>
+</div>
+
+<div class="modal confirm-modal" id="confirmModal" aria-hidden="true">
+    <div class="modal-content confirm-content">
+        <h2 id="confirmTitle">Confirm action</h2>
+        <p id="confirmMessage"></p>
+        <div class="confirm-actions">
+            <button class="secondary-btn" id="confirmCancel" type="button">Cancel</button>
+            <button class="primary-btn" id="confirmAccept" type="button">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <h2>PageVault</h2>
+    <p>Connecting students through books and knowledge.</p>
+    <p>© 2026 PageVault | OpenShelf Challenge</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="frontend-utils.js"></script>
+<script src="frontend-storage.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
